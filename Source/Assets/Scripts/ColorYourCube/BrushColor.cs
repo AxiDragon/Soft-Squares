@@ -12,7 +12,7 @@ public class BrushColor : MonoBehaviour
     Text colorScaleText, modeText;
 
     string[] dictStrings = new string[] { "Hue", "Saturation", "Value", "Roughness", "Metallic" };
-    string[] modeStrings = new string[] { "Color", "Move", "Paint" };
+    string[] modeStrings = new string[] { "Color", "Move", "View", "Paint" };
     int currentString = 0;
     int currentMode = 0;
     Dictionary<string, float> hueSaturationValue = new Dictionary<string, float>();
@@ -31,7 +31,7 @@ public class BrushColor : MonoBehaviour
     CubeSpawner cubeSpawner;
     CameraMove cameraMove;
     GameObject mainCamera;
-    int[] cursorCoordinates = new int[] { 12, 12, 0 };
+    int[] cursorCoordinates = new int[] { 5, 5, 0 };
 
     void Start()
     {
@@ -62,22 +62,75 @@ public class BrushColor : MonoBehaviour
     void FixedUpdate()
     {
         if (brushValueUp && !brushValueDown)
-            if (modeStrings[currentMode] == "Color")
-                ChangeColorScaleValue(true);
-            else
-                CursorMove("Down");
+        {
+            switch (modeStrings[currentMode])
+            {
+                case "Color":
+                    ChangeColorScaleValue(true);
+                    break;
+                case "View":
+                    cameraMove.UpdateMode(2f, 'Y');
+                    break;
+                default:
+                    CursorMove("Down");
+                    break;
+            }
+        }
 
         if (!brushValueUp && brushValueDown)
-            if (modeStrings[currentMode] == "Color")
-                ChangeColorScaleValue(false);
-            else
-                CursorMove("Up");
+        {
+            switch (modeStrings[currentMode])
+            {
+                case "Color":
+                    ChangeColorScaleValue(false);
+                    break;
+                case "View":
+                    cameraMove.UpdateMode(-2f, 'Y');
+                    break;
+                default:
+                    CursorMove("Up");
+                    break;
+            }
+        }
+
+        if (!brushValueUp && !brushValueDown)
+        {
+            cameraMove.UpdateMode(0f, 'Y');
+        }
 
         if (goRight && !goLeft)
-            CursorMove("Right");
+        {
+            switch (modeStrings[currentMode])
+            {
+                case "Move":
+                case "Paint":
+                    CursorMove("Right");
+                    break;
+                case "View":
+                    cameraMove.UpdateMode(2f, 'X');
+                    break;
+            }
+        }
+
 
         if (!goRight && goLeft)
-            CursorMove("Left");
+        {
+            switch (modeStrings[currentMode])
+            {
+                case "Move":
+                case "Paint":
+                    CursorMove("Left");
+                    break;
+                case "View":
+                    cameraMove.UpdateMode(-2f, 'X');
+                    break;
+            }
+        }
+
+        if (!goRight && !goLeft)
+        {
+            cameraMove.UpdateMode(0f, 'X');
+        }
 
         if (brushMaterialUpdated)
             holdMomentum += holdMomentumChange;
@@ -155,7 +208,7 @@ public class BrushColor : MonoBehaviour
                 case 2:
                     cursorCoordinates[i] += intChange.z;
                     break;
-            } 
+            }
 
             cursorCoordinates[i] = Mathf.Clamp(cursorCoordinates[i], 0, CubeSpawner.cubeMatrix.GetLength(0) - 1);
         }
@@ -202,27 +255,45 @@ public class BrushColor : MonoBehaviour
                         brushValueDown = !brushValueDown;
                         break;
                     case "1M":
-                        if (modeStrings[currentMode] != "Color")
-                            goLeft = !goLeft;
-                        else
-                            ChangeMode(true);
+                        switch (modeStrings[currentMode])
+                        {
+                            case "Color":
+                                ChangeMode(true);
+                                break;
+                            default:
+                                goLeft = !goLeft;
+                                break;
+                        }
                         break;
 
                     case "2M":
-                        if (modeStrings[currentMode] != "Color")
-                            goLeft = !goLeft;
+                        switch (modeStrings[currentMode])
+                        {
+                            case "Color":
+                                goLeft = !goLeft;
+                                break;
+                        }
                         break;
 
                     case "1J":
-                        if (modeStrings[currentMode] != "Color")
-                            goRight = !goRight;
-                        else
-                            ChangeMode(false);
+                        switch (modeStrings[currentMode])
+                        {
+                            case "Color":
+                                ChangeMode(true);
+                                break;
+                            default:
+                                goRight = !goRight;
+                                break;
+                        }
                         break;
 
                     case "2J":
-                        if (modeStrings[currentMode] != "Color")
-                            goRight = !goRight;
+                        switch (modeStrings[currentMode])
+                        {
+                            case "Color":
+                                goRight = !goRight;
+                                break;
+                        }
                         break;
 
                     case "1P":

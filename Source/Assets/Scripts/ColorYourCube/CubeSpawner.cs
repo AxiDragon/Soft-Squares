@@ -11,7 +11,7 @@ public class CubeSpawner : MonoBehaviour
 
     Camera gridCamera;
 
-    public static GameObject[,,] cubeMatrix = new GameObject[10, 10, 10];
+    public static GameObject[,,] cubeMatrix = new GameObject[5, 5, 5];
 
     int width, height, depth;
 

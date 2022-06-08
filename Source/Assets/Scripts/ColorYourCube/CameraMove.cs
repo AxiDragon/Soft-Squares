@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraMove : MonoBehaviour
@@ -11,6 +9,8 @@ public class CameraMove : MonoBehaviour
     float xSpeed, ySpeed = 0f;
 
     float momentum = 1f;
+
+    bool usingJoystick = false;
 
     void Start()
     {
@@ -36,9 +36,31 @@ public class CameraMove : MonoBehaviour
         float speedValue = float.Parse(ParseString(joystickInput)) - 3f;
 
         if (joystickInput.Contains("X"))
+        {
+            usingJoystick = true;
             xSpeed = speedValue;
+        }
         else if (joystickInput.Contains("Y"))
+        {
+            usingJoystick = true;
             ySpeed = speedValue;
+        }
+    }
+
+    public void UpdateMode(float inputValue, char axis)
+    {
+        if (!usingJoystick)
+        {
+            switch (axis)
+            {
+                case 'X':
+                    xSpeed = inputValue;
+                    break;
+                case 'Y':
+                    ySpeed = inputValue;
+                    break;
+            }
+        }
     }
 
     string ParseString(string input)
