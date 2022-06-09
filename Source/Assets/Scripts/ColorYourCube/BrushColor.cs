@@ -72,7 +72,7 @@ public class BrushColor : MonoBehaviour
                     cameraMove.UpdateMode(2f, 'Y');
                     break;
                 default:
-                    CursorMove("Down");
+                    CursorMove("Up");
                     break;
             }
         }
@@ -88,12 +88,12 @@ public class BrushColor : MonoBehaviour
                     cameraMove.UpdateMode(-2f, 'Y');
                     break;
                 default:
-                    CursorMove("Up");
+                    CursorMove("Down");
                     break;
             }
         }
 
-        if (!brushValueUp && !brushValueDown)
+        if (brushValueUp == brushValueDown)
         {
             cameraMove.UpdateMode(0f, 'Y');
         }
@@ -107,11 +107,10 @@ public class BrushColor : MonoBehaviour
                     CursorMove("Right");
                     break;
                 case "View":
-                    cameraMove.UpdateMode(2f, 'X');
+                    cameraMove.UpdateMode(-2f, 'X');
                     break;
             }
         }
-
 
         if (!goRight && goLeft)
         {
@@ -122,12 +121,12 @@ public class BrushColor : MonoBehaviour
                     CursorMove("Left");
                     break;
                 case "View":
-                    cameraMove.UpdateMode(-2f, 'X');
+                    cameraMove.UpdateMode(2f, 'X');
                     break;
             }
         }
 
-        if (!goRight && !goLeft)
+        if (goRight == goLeft)
         {
             cameraMove.UpdateMode(0f, 'X');
         }
@@ -248,17 +247,17 @@ public class BrushColor : MonoBehaviour
                 {
                     case "1C":
                     case "2C":
-                        brushValueUp = !brushValueUp;
+                        brushValueDown = !brushValueDown;
                         break;
                     case "1D":
                     case "2D":
-                        brushValueDown = !brushValueDown;
+                        brushValueUp = !brushValueUp;
                         break;
                     case "1M":
                         switch (modeStrings[currentMode])
                         {
                             case "Color":
-                                ChangeMode(true);
+                                ChangeMode(false);
                                 break;
                             default:
                                 goLeft = !goLeft;
@@ -270,6 +269,8 @@ public class BrushColor : MonoBehaviour
                         switch (modeStrings[currentMode])
                         {
                             case "Color":
+                                break;
+                            default :
                                 goLeft = !goLeft;
                                 break;
                         }
@@ -291,6 +292,8 @@ public class BrushColor : MonoBehaviour
                         switch (modeStrings[currentMode])
                         {
                             case "Color":
+                                break;
+                            default :
                                 goRight = !goRight;
                                 break;
                         }
@@ -300,7 +303,8 @@ public class BrushColor : MonoBehaviour
                         ChangePaintMode();
                         brushValueUp = brushValueDown = goLeft = goRight = brushMaterialUpdated = false;
                         break;
-
+                    case "2P":
+                        break;
                     case "3R":
                         cubeSpawner.DestroyCube();
                         break;

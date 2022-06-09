@@ -1,8 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
 using System.IO;
+using UnityEngine;
 
 public class CubeSpawner : MonoBehaviour
 {
@@ -58,6 +56,10 @@ public class CubeSpawner : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
             Application.Quit();
+
+        if (Input.GetKeyDown(KeyCode.S))
+            StartCoroutine(Screenshot());
+
     }
 
     public void StartScreenshotCoroutine()

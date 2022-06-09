@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/ColorYourCube.unity
+    guid: 850bb68cb8b8f6c40a31023d35fa7826
   m_configObjects: {}

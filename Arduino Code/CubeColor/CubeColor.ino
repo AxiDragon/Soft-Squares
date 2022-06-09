@@ -3,10 +3,10 @@
 #define colorUpButton 2
 #define colorDownButton 4
 #define modeUpButton 7
-#define modeDownButton 8
+#define modeDownButton 12
 #define joystickX 1
 #define joystickY 0
-#define joystickButton 12
+#define joystickButton 13
 
 unsigned long currentMillis = 0;
 unsigned long previousMillis = 0;
@@ -50,12 +50,9 @@ void loop() {
 
   for (int i = 0; i < (sizeof(analogPins) / sizeof(analogPins[0])); i++)
   {
-    //CheckJoystick(analogPins[i]);
+    CheckJoystick(analogPins[i]);
   }
 
-//  Serial.print("X = "); Serial.print(analogRead(joystickX));
-//  Serial.print("  Y = "); Serial.println(analogRead(joystickY));
-    
   currentMillis = millis();
 
   if (currentMillis - previousMillis < interval)
@@ -143,6 +140,7 @@ int CheckButtonPress(int pinNumber, int arrayNumber) {
 }
 
 char ButtonID(int id){
+  //C bottom, D top, J right, M left
   switch (id)
   {
     case 0:
