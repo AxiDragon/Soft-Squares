@@ -8,30 +8,38 @@
 #define joystickY 0
 #define joystickButton 13
 
+//Interval between chisel strikes - delay lags Unity
 unsigned long currentMillis = 0;
 unsigned long previousMillis = 0;
 
 const long interval = 700;
 
+//Array for buttons, to be used in for-loops
 int buttons[] = {colorUpButton, colorDownButton, modeUpButton, modeDownButton, joystickButton};
 int analogPins[] = {joystickX, joystickY};
 
+//Array to check if buttons are already pressed (to avoid sending multiple commands)
 bool buttonPressed[] = {true, true, true, true, true};
 
+//Integers for the tilt of the joystick
 int joyX, joyY;
 
+//Variables for the accelerometer
 int accel = 0x53;
 int x, y, z;
 
 void setup() {  
+  //Set up the pin buttons. Set to HIGH to avoid pull-up resistors fighting
   for (int i = 0; i < (sizeof(buttons) / sizeof(buttons[0])); i++)
   {
       pinMode(buttons[i], INPUT);
       digitalWrite(buttons[i], HIGH);
   }
-  
+
+  //Start serial communication to send commands to Unity
   Serial.begin(9600);
 
+  //Start communication with accelerometer
   Wire.begin();
   Wire.beginTransmission(accel);
   Wire.write(0x2D);
@@ -40,6 +48,7 @@ void setup() {
 }
 
 void loop() {  
+  //Check whether button is pressed or released this frame
   for (int i = 0; i < (sizeof(buttons) / sizeof(buttons[0])); i++)
   {
     int buttonState = CheckButtonPress(buttons[i], i);
@@ -48,23 +57,27 @@ void loop() {
       Serial.println(String(buttonState) + ButtonID(i));
   }
 
+  //Check whether joystick angle has changed
   for (int i = 0; i < (sizeof(analogPins) / sizeof(analogPins[0])); i++)
   {
     CheckJoystick(analogPins[i]);
   }
 
+  //Check if chisel cooldown has worn off
   currentMillis = millis();
 
   if (currentMillis - previousMillis < interval)
     return;
- 
-  if (CheckForce() > 600  )
+
+  //if player swings with more than approx 3g
+  if (CheckForce() > 600)
   {
     Serial.println("3R");
     previousMillis = currentMillis;
   }
 }
 
+//Read joystick input, and send a message if the rotation is new
 void CheckJoystick(int pinNumber){
   int tilt = CheckTilt(analogRead(pinNumber));
   char axis = 'O';
@@ -94,6 +107,7 @@ void CheckJoystick(int pinNumber){
     Serial.println(String(tilt) + axis);
 }
 
+//Read joystick input
 int CheckTilt(int result){
   if (result > 950)
     return 5;
@@ -106,6 +120,8 @@ int CheckTilt(int result){
 
     return 1;
 }
+
+//Check accelerometer force
 float CheckForce(){  
   Wire.beginTransmission(accel);
   Wire.write(0x32);
@@ -122,6 +138,7 @@ float CheckForce(){
   return x + y + z - 256;
 }
 
+//Check if button was pressed (1) or released (2) this frame
 int CheckButtonPress(int pinNumber, int arrayNumber) {
   if (!digitalRead(pinNumber))  {
     if (buttonPressed[arrayNumber])
@@ -139,6 +156,7 @@ int CheckButtonPress(int pinNumber, int arrayNumber) {
     return 2;
 }
 
+//Assign a character to each button for Unity to read
 char ButtonID(int id){
   //C bottom, D top, J right, M left
   switch (id)
